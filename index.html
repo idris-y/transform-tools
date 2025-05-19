@@ -118,6 +118,30 @@
             margin-right: auto;
         }
 
+        /* New style for the hero documentation link */
+        .hero-docs-link-top {
+            margin-top: 1em; /* Space from subtitle */
+            margin-bottom: 1em; /* Adjusted to align with the overall spacing rhythm */
+            font-size: clamp(0.9em, 1.8vw, 1.1em);
+            text-align: center;
+        }
+        .hero-docs-link-top a {
+            color: #8ab4f8; /* A softer, distinct link color */
+            text-decoration: none;
+            font-weight: 500;
+            padding: 6px 10px;
+            border-radius: 4px;
+            border: 1px solid transparent; /* For hover effect consistency */
+            transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+        }
+        .hero-docs-link-top a:hover {
+            color: #a3c5f9;
+            background-color: rgba(138, 180, 248, 0.1); /* Subtle hover background */
+            border-color: rgba(138, 180, 248, 0.3);
+            text-decoration: none; /* Keep no underline on hover */
+        }
+
+
         .hero-image-and-button-wrapper {
             position: relative;
             width: 100%;
@@ -358,6 +382,10 @@
         <div class="hero-text-content-top">
             <h1>Transform Tools for Blender</h1>
             <p class="subtitle">Precision, Speed, and Control for Your 3D Transformations.</p>
+            <!-- ADDED LINK HERE -->
+            <p class="hero-docs-link-top">
+                <a href="https://idris-y.github.io/transform-tools-docs/" target="_blank" rel="noopener noreferrer">Explore Features & Documentation ➔</a>
+            </p>
         </div>
 
         <div class="hero-image-and-button-wrapper">
