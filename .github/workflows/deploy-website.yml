@@ -3,8 +3,15 @@ name: Build and Deploy Website
 on:
   workflow_dispatch:
 
+# NEW: Add permissions for the new deployment method
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
-  deploy:
+  # This job builds the website
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout docs repository content
@@ -27,8 +34,22 @@ jobs:
       - name: Copy landing page to the site root
         run: cp -r website-source/landing/* site/
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      # NEW STEP: Upload the finished 'site' folder as a deployment artifact
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site
+          path: ./site
+
+  # This job deploys the website from the artifact
+  deploy:
+    # It needs the 'build' job to be completed first
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      # NEW STEP: This is the official action for deploying to GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
