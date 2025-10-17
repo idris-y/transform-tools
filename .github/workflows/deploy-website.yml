@@ -1,55 +1,46 @@
-name: Build and Deploy Website
+name: Deploy Landing Page
 
 on:
   workflow_dispatch:
 
-# NEW: Add permissions for the new deployment method
 permissions:
   contents: read
   pages: write
   id-token: write
 
 jobs:
-  # This job builds the website
   build:
     runs-on: ubuntu-latest
     steps:
+      # Step 1: Get the website content from the docs repository
       - name: Checkout docs repository content
         uses: actions/checkout@v4
         with:
           repository: idris-y/transform-tools-docs
           path: website-source
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.x
+      # Step 2: Create a deployment folder
+      # We have to create this folder manually now
+      - name: Create deployment folder
+        run: mkdir ./site
 
-      - name: Install MkDocs and theme
-        run: pip install mkdocs mkdocs-material
-
-      - name: Build MkDocs site
-        run: mkdocs build --config-file website-source/mkdocs.yml
-
-      - name: Copy landing page to the site root
-        run: cp -r website-source/landing/* site/
-
-      # NEW STEP: Upload the finished 'site' folder as a deployment artifact
+      # Step 3: Copy ONLY the landing page files into it
+      - name: Copy landing page files
+        run: cp -r website-source/landing/* ./site/
+      
+      # Step 4: Upload the finished landing page as a deployment artifact
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./site
 
-  # This job deploys the website from the artifact
   deploy:
-    # It needs the 'build' job to be completed first
     needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      # NEW STEP: This is the official action for deploying to GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
