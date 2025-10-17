@@ -1,0 +1,34 @@
+name: Build and Deploy Website
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout docs repository content
+        uses: actions/checkout@v4
+        with:
+          repository: idris-y/transform-tools-docs
+          path: website-source
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+
+      - name: Install MkDocs and theme
+        run: pip install mkdocs mkdocs-material
+
+      - name: Build MkDocs site
+        run: mkdocs build --config-file website-source/mkdocs.yml
+
+      - name: Copy landing page to the site root
+        run: cp -r website-source/landing/* site/
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
